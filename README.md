@@ -70,7 +70,7 @@ it is expected that the imported class was defined correctly, in another file, a
   // app.module.js
   import { SomeController } from './some.controller';
   import { someFactory } from './some.factory';
-  
+
   angular
       .module('app', ['ngRoute'])
       .controller('SomeController', SomeController)
@@ -146,7 +146,7 @@ it is expected that the imported class was defined correctly, in another file, a
   ```javascript
   /* avoid */
   import { SomeController } from './some.controller';
-  
+
   const app = angular.module('app');
   app.controller('SomeController', SomeController);
   ```
@@ -154,7 +154,7 @@ it is expected that the imported class was defined correctly, in another file, a
   ```javascript
   /* recommended */
   import { SomeController } from './some.controller';
-  
+
   angular
       .module('app')
       .controller('SomeController', SomeController);
@@ -193,7 +193,7 @@ it is expected that the imported class was defined correctly, in another file, a
 
   ```javascript
   /* recommended */
-  
+
   // dashboard.controller.js
 
   class Dashboard {
@@ -202,7 +202,7 @@ it is expected that the imported class was defined correctly, in another file, a
 
   // index.module.js
   import { Dashboard } from './dashboard.controller';
-  
+
   angular
       .module('app')
       .controller('Dashboard', Dashboard);
@@ -236,7 +236,7 @@ it is expected that the imported class was defined correctly, in another file, a
       {{customer.name}}
   </div>
   ```
-  
+
 controllerAs can also be used in the router like so:
 
 ```js
@@ -260,7 +260,7 @@ controllerAs can also be used in the router like so:
 
   ```javascript
   /* avoid */
-  class Customer { 
+  class Customer {
     constructor($scope) {
       $scope.name = {};
       $scope.sendMessage = function() { };
@@ -344,7 +344,7 @@ controllerAs can also be used in the router like so:
 
   ```javascript
   /* recommended */
-  class Order { 
+  class Order {
     constructor (creditService) {
       this.isCreditOk;
       this.total = 0;
@@ -451,15 +451,19 @@ controllerAs can also be used in the router like so:
 
     *Why?*: Data service implementation may have very specific code to handle the data repository. This may include headers, how to talk to the data, or other services such as `$http`. Separating the logic into a data service encapsulates this logic in a single place hiding the implementation from the outside consumers (perhaps a controller), also making it easier to change the implementation.
 
+    Note: The following ES6 factory definition uses the `new` operator to instantiate the factory function, and supplying the desired services used internally.
+
+    ES6: With Angular 1.x and ES6, use of factories will decrease and `services` should be used moving forward (see angular [services](#data-services))
+
   ```javascript
   /* recommended */
 
   // dataservice factory
-  angular
-      .module('app.core')
-      .factory('dataservice', dataservice);
+  angular.module('app.core')
+      .factory('dataservice', ['$http', 'logger', ($http, logger)
+        => new Dataservice($http, logger)]);
 
-  class dataservice { 
+  class Dataservice {
     constructor($http, logger) {
       this.$http = $http;
       this.logger = logger;
@@ -556,14 +560,14 @@ controllerAs can also be used in the router like so:
 
   ```javascript
   /* recommended */
-      
+
   /* calendarRange.directive.js */
 
   /**
    * @desc order directive that is specific to the order module at a company named Acme
    * @example <div acme-order-calendar-range></div>
    */
- 
+
   class orderCalendarRange {
       /* implementation details */
   }
@@ -571,7 +575,7 @@ controllerAs can also be used in the router like so:
 
   ```javascript
   /* recommended */
-  
+
   /* customerInfo.directive.js */
 
   /**
@@ -586,14 +590,14 @@ controllerAs can also be used in the router like so:
 
   ```javascript
   /* recommended */
-  
+
   /* spinner.directive.js */
 
   /**
    * @desc spinner directive that can be used anywhere across apps at a company named Acme
    * @example <div acme-shared-spinner></div>
    */
- 
+
   class sharedSpinner {
       /* implementation details */
   }
@@ -636,7 +640,7 @@ controllerAs can also be used in the router like so:
   ```javascript
   /* avoid */
 
-  class myCalendarRange { 
+  class myCalendarRange {
     constructor() {
       this.link = this.linkFunc;
       this.templateUrl = '/template/is/located/here.html';
@@ -657,7 +661,7 @@ controllerAs can also be used in the router like so:
   ```javascript
   /* recommended */
 
-  class myCalendarRange { 
+  class myCalendarRange {
     constructor() {
       this.link = this.linkFunc;
       this.templateUrl = '/template/is/located/here.html';
@@ -683,13 +687,13 @@ controllerAs can also be used in the router like so:
   ```html
   <div my-example max="77"></div>
   ```
-  
+
   ```js
  //myExample.directive.js
- class ExampleController { 
+ class ExampleController {
     constructor($scope) {
       // Injecting $scope just for comparison
-     
+
       this.min = 3;
 
       console.log('CTRL: $scope.example.min = %s', $scope.example.min);
@@ -753,7 +757,7 @@ controllerAs can also be used in the router like so:
 
   ```javascript
   //myExample.directive.js
-   class ExampleController { 
+   class ExampleController {
     constructor() {
       this.min = 3;
       console.log('CTRL: this.min = %s', this.min);
@@ -761,8 +765,8 @@ controllerAs can also be used in the router like so:
     }
   }
 
-  class myExample { 
-    constructor() { 
+  class myExample {
+    constructor() {
       this.restrict = 'EA';
       this.templateUrl = 'app/feature/example.directive.html';
       this.scope = {
@@ -800,8 +804,8 @@ controllerAs can also be used in the router like so:
 
   ```javascript
   /* avoid */
-  
-  class AvengersController { 
+
+  class AvengersController {
     constructor(movieService) {
       // unresolved
       this.movies;
@@ -817,7 +821,7 @@ controllerAs can also be used in the router like so:
   /* better */
 
   // route-config.js
- 
+
   function config($routeProvider) {
     $routeProvider
       .when('/avengers', {
@@ -834,7 +838,7 @@ controllerAs can also be used in the router like so:
 
   // avengers.controller.js
 
-  class AvengersController { 
+  class AvengersController {
     constructor(moviesPrepService) {
       this.movies = moviesPrepService.movies;
     }
@@ -865,8 +869,8 @@ controllerAs can also be used in the router like so:
   }
 
   // avengers.controller.js
- 
-  class AvengersController { 
+
+  class AvengersController {
     constructor(moviesPrepService) {
       this.movies = moviesPrepService.movies;
     }
@@ -885,12 +889,12 @@ controllerAs can also be used in the router like so:
     *Why?*: This safeguards your code from any dependencies that may not be using minification-safe practices.
 
     ```javascript
-    class Avengers { 
+    class Avengers {
       constructor(storage, avengerService) {
         'ngInject';
-      
+
         this.heroSearch = '';
-        
+
         this.avengerService = avengerService;
         this.storage = storage;
       }
@@ -1195,7 +1199,7 @@ controllerAs can also be used in the router like so:
 
     // logger.service.js
 
-    class logger { 
+    class logger {
       constructor() { }
     }
     ```
@@ -1207,13 +1211,13 @@ controllerAs can also be used in the router like so:
 
     // credit.service.js
 
-    class creditService { 
+    class creditService {
       constructor() { }
     }
 
     // customer.service.js
 
-    class customersService { 
+    class customersService {
       constructor() { }
     }
     ```
@@ -1784,7 +1788,7 @@ Unit testing helps maintain clean code, as such I included some of my recommenda
     *Why?*: Provides a first alert prior to committing any code to source control.
 
     *Why?*: Provides consistency across your team.
-    
+
     *Why?*: ESLint supports ES6.
 
     ```javascript
@@ -1946,7 +1950,7 @@ Client-side routing is important for creating a navigation flow between views an
         .module('app.customers')
         .run(appRun);
 
-    
+
     function appRun(routerHelper) {
       'ngInject';
       routerHelper.configureStates(getStates());
@@ -1972,7 +1976,7 @@ Client-side routing is important for creating a navigation flow between views an
         .module('blocks.router')
         .provider('routerHelper', routerHelperProvider);
 
-    
+
     function routerHelperProvider($locationProvider, $stateProvider, $urlRouterProvider) {
       'ngInject';
       /* jshint validthis:true */
