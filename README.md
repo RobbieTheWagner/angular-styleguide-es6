@@ -7,8 +7,6 @@ This is an ES2015/ES6 fork of the popular Angular 1.x Style Guide by John Papa. 
 Please be advised that all examples will not be copy/paste working examples. In instances where classes are imported,
 it is expected that the imported class was defined correctly, in another file, and imported in.
 
-[![Sponsor](https://app.codesponsor.io/embed/bnfiyuC9jfaRVvE6NRbanWqE/rwwagner90/angular-styleguide-es6.svg)](https://app.codesponsor.io/link/bnfiyuC9jfaRVvE6NRbanWqE/rwwagner90/angular-styleguide-es6)
-
 ## Table of Contents
 
   1. [Single Responsibility](#single-responsibility)
